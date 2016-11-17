@@ -419,6 +419,19 @@ class TestRegistry(QuantityTestCase):
         self.assertRaises(DimensionalityError, g3, 1 * ureg.parsec, 1 * ureg.angstrom)
         self.assertRaises(DimensionalityError, g3, 1 * ureg.parsec, 1 * ureg.angstrom, 1 * ureg.kilogram)
 
+        # issue 439
+        # a function with default arguments
+        default_a = 10 * ureg.meters
+        def dfunc(a=default_a):
+            return a
+
+        d0 = ureg.check('[length]')(dfunc)
+        self.assertEqual(10*ureg.inches, d0(10*ureg.inches))
+        self.assertEqual(default_a, d0())
+        self.assertRaises(DimensionalityError, d0, 10*ureg.seconds)
+        #kwargs parameters currently not checked. this behavior may change in the future.
+        self.assertEqual(10*ureg.seconds, d0(a=10*ureg.seconds))
+
     def test_to_ref_vs_to(self):
         self.ureg.autoconvert_offset_to_baseunit = True
         q = 8. * self.ureg.inch

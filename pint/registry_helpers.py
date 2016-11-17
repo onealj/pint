@@ -206,7 +206,9 @@ def check(ureg, *args):
 
         @functools.wraps(func, assigned=assigned, updated=updated)
         def wrapper(*values, **kwargs):
-            for dim, value in zip_longest(dimensions, values):
+            # check all non-default values for dimensionality
+            # kwargs are not checked
+            for dim, value in zip(dimensions, values):
                 if dim and value.dimensionality != dim:
                     raise DimensionalityError(value, 'a quantity of',
                                               value.dimensionality, dim)
