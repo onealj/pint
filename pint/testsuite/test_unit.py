@@ -432,6 +432,12 @@ class TestRegistry(QuantityTestCase):
         #kwargs parameters currently not checked. this behavior may change in the future.
         self.assertEqual(10*ureg.seconds, d0(a=10*ureg.seconds))
 
+        # the dimension of the default argument should be checked against the ureg.check dimension if
+        # the default argument is not overridden
+        d1 = ureg.check('[time]')(dfunc)
+        # FIXME: currently fails
+        #self.assertRaises(DimensionalityError, d1)
+
     def test_to_ref_vs_to(self):
         self.ureg.autoconvert_offset_to_baseunit = True
         q = 8. * self.ureg.inch
